@@ -406,6 +406,8 @@
           $(".btn-danger-usuario").fadeIn();
           $("#modificar").fadeIn();
           $(".btn-cancelar").hide();
+          $(".content-usuario-panel").fadeIn();
+          $(".form-usuario-panel").removeAttr("style");
           if(confirm("Desea añadir la Unidad Organizativa: " + $(".input-nombre").val() + "?")){
           var parametros = {
                 "accion" : "agregar",
@@ -448,6 +450,8 @@
           $("#modificar").hide();
           $(".form-usuario-panel input, textarea").val("");
           $(".mb h4").text("Añadir Unidad Organizativa");
+          $(".content-usuario-panel").hide();
+          $(".form-usuario-panel").css("width","100%");
       });
 
       $(".btn-danger-usuario").click(function(){
@@ -464,6 +468,9 @@
                 type:  'post',
                 success:  function (response) {
                         alert("Se ha eliminado con exito");
+
+                        $(".input input ,textarea").val("");
+
                         var parametros = {
                             "objetivo":"ou",
                             "accion" : "buscar",

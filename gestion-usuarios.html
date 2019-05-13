@@ -281,8 +281,8 @@
         <div class="row mb">
           <!-- page start-->
           <div class="content-usuario-panel">
-            <input class="input-search" type="input">
-            <button><i class="fa fa-search"></i></button>
+            <input class="input-buscar" type="input">
+            <button class="boton-buscar"><i class="fa fa-search"></i></button>
             <div class="adv-table">
               <table cellpadding="0" cellspacing="0" border="0" class="display table table-bordered" id="hidden-table-info">
                 <thead>
@@ -291,11 +291,7 @@
                     <th>Nombre</th>
                   </tr>
                 </thead>
-                <tbody>
-                  <tr class="gradeX">
-                    <td>Trident</td>
-                    <td>Marín</td>
-                  </tr>
+                <tbody class="filas">
                 </tbody>
               </table>
             </div>
@@ -305,14 +301,14 @@
             <div class="contenido">
               <div class="input">
                   <p>ID</p>
-                  <input class="input-id" type="input" value="2" readonly required="required">
+                  <input class="input-id" type="input" value="" readonly required="required">
               </div>
               <div class="input">
                 <p>Usuario</p>
-                <input  class="input-usuario" type="input" value="Juan" readonly required="required">
+                <input  class="input-usuario" type="input" value="" readonly required="required">
               </div>
-              <div class="input">
-                <p>Contrasenya</p>
+              <div class="input-contrasenya">
+                <p>Contraseña</p>
                 <input  class="input-contrasenya" type="password" readonly required="required">
               </div>
               <div class="input">
@@ -381,14 +377,10 @@
       $(".btn-aceptar").hide();
       $(".btn-aceptar-anyadir").hide();
       $(".btn-cancelar").hide();
+      $(".input-contrasenya").hide();
 
       var resguardo =[];
       $("#modificar").click(function(){
-          resguardo[0] = $(".input-id").val();
-          resguardo[1] = $(".input-usuario").val();
-          resguardo[2] = $(".input-nombre").val();
-          resguardo[3] = $(".input-apellidos").val();
-          resguardo[4] = $(".input-grupo").val();
           $(this).hide();
           $(".content-usuario-panel").hide();
           $(".form-usuario-panel").css("width","100%");
@@ -398,6 +390,7 @@
           $(".btn-aceptar").fadeIn();
           $(".btn-danger-usuario").hide();
           $(".btn-cancelar").fadeIn();
+          $(".input-contrasenya").fadeIn();
       });
       $(".btn-aceptar").click(function(){
           $("#modificar").fadeIn();
@@ -408,6 +401,7 @@
           $(".content-usuario-panel").fadeIn();
           $(".btn-danger-usuario").fadeIn();
           $(".btn-cancelar").hide();
+          $(".input-contrasenya").fadeIn();
           $(".mb h4").text("Información del Usuario");
           $(".form-usuario-panel").removeAttr("style");
       });
@@ -422,6 +416,7 @@
           $(".btn-aceptar-anyadir").hide();
           $(".form-usuario-panel").removeAttr("style");
           $(".content-usuario-panel").fadeIn();
+          $(".input-contrasenya").fadeOut();
           $(".mb h4").text("Información del Usuario");
       });
 
@@ -434,12 +429,14 @@
           $(".btn-danger-usuario").fadeIn();
           $("#modificar").fadeIn();
           $(".btn-cancelar").hide();
+          $(".input-contrasenya").fadeIn();
           if(confirm("Desea añadir al usuario: " + $(".input-usuario").val() + "?")){
           var parametros = {
                 "accion" : "agregar",
                 "objetivo": "usuario",
                 "usuario" : $(".input-usuario").val(),
                 "nombre" : $(".input-nombre").val(),
+                "contrasenya" : $(".input-contrasenya").val(),
                 "apellidos" : $(".input-apellidos").val(),
                 "idgrupo" : $(".input-grupo").val(),
                 "id" : $(".input-id").val()
@@ -465,6 +462,9 @@
           $("#modificar").hide();
           $(".form-usuario-panel input").val("");
           $(".mb h4").text("Añadir Usuario");
+          $(".content-usuario-panel").hide();
+          $(".form-usuario-panel").css("width","100%");
+          $(".input-contrasenya").fadeIn();
       });
 
       $(".btn-danger-usuario").click(function(){
@@ -473,6 +473,7 @@
                 "accion" : "eliminar",
                 "objetivo": "usuario",
                 "usuario" : $(".input-usuario").val(),
+                "contrasenya" : $(".input-contrasenya").val(),
                 "nombre" : $(".input-nombre").val(),
                 "apellidos" : $(".input-apellidos").val(),
                 "idgrupo" : $(".input-grupo").val(),
@@ -483,16 +484,30 @@
                 url:   'resp.php',
                 type:  'post',
                 success:  function (response) {
-                        //$("#resultado").html(response);
-												alert(response);
+                        $(".input input").val("");
+                        alert(response);
+                        var parametros = {
+                            "objetivo":"usuario",
+                            "accion" : "buscar",
+                            "busqueda" :"*" 
+                        };
+                        $.ajax({
+                              data:  parametros,
+                              url:   'resp.php',
+                              type:  'post',
+                              success:  function (response) {
+                                      $(".filas").html(response);
+                                      $.getScript("ver-info-usuario.js", function(){
+                                      })
+                              }
+                        }) 
                 }
           });
         }
       });
-
       $(".boton-buscar").click(function(){
         var parametros = {
-            "objetivo":"ou",
+            "objetivo":"usuario",
             "accion" : "buscar",
             "busqueda" :$(".input-buscar").val() + "*" 
           };
@@ -502,7 +517,7 @@
               type:  'post',
               success:  function (response) {
                       $(".filas").html(response);
-                      $.getScript("ver-info.js", function(){
+                      $.getScript("ver-info-usuario.js", function(){
                       });
               }
         })

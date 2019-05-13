@@ -21,11 +21,18 @@ switch($_POST['objetivo']){
         }
         break;
     case "usuario":
-        $usuario= new usuario(
-            $_POST['id'],
-            $_POST['usuario'],$_POST['nombre'],
-            $_POST['apellidos'],
-            $_POST['idgrupo']); 
+        if(isset($_POST['usuario'])){
+            $usuario= new usuario(
+                $_POST['id'],
+                $_POST['usuario'],
+                $_POST['contrasenya'],
+                $_POST['nombre'],
+                $_POST['apellidos'],
+                $_POST['idgrupo']); 
+        }
+        else{
+            $usuario = new usuario(null,null,null,null,null,null);
+        }
         break;
     case "grupo":
         $grupo= new grupo($nombre,$id); 

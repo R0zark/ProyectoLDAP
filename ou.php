@@ -28,12 +28,10 @@ class ou{
         $info['objectClass'][1] = "organizationalUnit";
         $info['ou'] = $this->getNombre();
         $info['description'] = $this->getDescripcion();
-        echo $this->getDescripcion();
         $auto=ldap_add($conexion,$this->getRuta(),$info);
         echo"Usuario a agregado: ".$this->getNombre()." en la ruta ". $this->getRuta();
     }
     function buscar($conexion){
-        echo"Hola";
         $sr=ldap_search($conexion,"dc=ldap, dc=es","ou=".$_POST['busqueda']);
         $info = ldap_get_entries($conexion,$sr);
         for ($i=0; $i<$info["count"]; $i++) {
@@ -47,7 +45,9 @@ class ou{
         $justthese = array("ou","description");
         $sr=ldap_search($conexion,"dc=ldap, dc=es","ou=".$_POST['nombre']);
         $info = ldap_get_entries($conexion,$sr);
-        $arrayrespuesta = array($info[0]["ou"][0],$info[0]["description"][0]);
+        $arrayrespuesta = array(
+            $info[0]["ou"][0],
+            $info[0]["description"][0]);
         echo json_encode($arrayrespuesta);
     }
     public function __construct($nombre){

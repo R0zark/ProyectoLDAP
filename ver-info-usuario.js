@@ -3,7 +3,13 @@ $(".gradeX td").click(function(){
     var parametros = {
             "accion" : "buscar-o",
             "objetivo": "usuario",
-            "nombre" : nombre,
+            "usuario" : nombre,
+            "nombre": null,
+            "apellidos": null,
+            "contrasenya": null,
+            "id": null,
+            "idgrupo": null,
+            "contrasenya": null,
       };
       $.ajax({
             data:  parametros,
@@ -12,8 +18,10 @@ $(".gradeX td").click(function(){
             success:  function (response) {
                                           var array = JSON.parse(response);
                                           $(".input-nombre").val(array[0]);
-                                          $(".input-descripcion").val(array[1]);
-                                          
+                                          $(".input-apellidos").val(array[1]);
+                                          $(".input-usuario").val(array[2]);
+                                          $(".input-id").val(array[3]);
+                                          $(".input-grupo").val(array[4]);                   
             }
       });  
 
