@@ -33,6 +33,17 @@ class ou{
         echo"Usuario a agregado: ".$this->getNombre()." en la ruta ". $this->getRuta();
     }
     function buscar($conexion){
+        echo"Hola";
+        $sr=ldap_search($conexion,"dc=ldap, dc=es","ou=".$_POST['busqueda']);
+        $info = ldap_get_entries($conexion,$sr);
+        for ($i=0; $i<$info["count"]; $i++) {
+            echo "
+            <tr class='gradeX'>
+                <td><p class='p$i'>".$info[$i]["ou"][0]."</p></td>
+            </tr> ";
+        }
+    }
+    function buscar_o($conexion){
         $justthese = array("ou","description");
         $sr=ldap_search($conexion,"dc=ldap, dc=es","ou=".$_POST['nombre']);
         $info = ldap_get_entries($conexion,$sr);
@@ -40,7 +51,7 @@ class ou{
         echo json_encode($arrayrespuesta);
     }
     public function __construct($nombre){
-        $this->nombre = $nombre;
+            $this->nombre = $nombre;
         if(empty($_POST['descripcion'])){
             $this->descripcion = "Unidad organizativa de " . $this->getNombre();
         }

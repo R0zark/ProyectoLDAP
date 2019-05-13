@@ -13,7 +13,12 @@ catch(Exception $e ){
 }
 switch($_POST['objetivo']){
     case "ou":
-        $ou= new ou($_POST['nombre']); 
+        if(isset($_POST['nombre'])){
+            $ou= new ou($_POST['nombre']);
+        }
+        else{
+            $ou= new ou(null); 
+        }
         break;
     case "usuario":
         $usuario= new usuario(
@@ -52,22 +57,20 @@ switch($_POST['accion']) {
             $grupo->modificar($conexion);
         break;
     case "buscar":
-        $sr=ldap_search($conexion,"dc=ldap, dc=es","ou=".$_POST['busqueda']);
-        $info = ldap_get_entries($conexion,$sr);
-        for ($i=0; $i<$info["count"]; $i++) {
-            echo "
-            <tr class='gradeX'>
-                <td><p class='p$i'>".$info[$i]["ou"][0]."</p></td>
-            </tr> ";
-        }
-        break;
-    case "buscar-o":
         if(isset($usuario))
             $usuario->buscar($conexion);
         if(isset($ou))
             $ou->buscar($conexion);
         if(isset($grupo))
             $grupo->buscar($conexion);
+        break;
+    case "buscar-o":
+        if(isset($usuario))
+            $usuario->buscar_o($conexion);
+        if(isset($ou))
+            $ou->buscar_o($conexion);
+        if(isset($grupo))
+            $grupo->buscar_o($conexion);
         break;
 }
 ?>

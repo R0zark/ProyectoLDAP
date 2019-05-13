@@ -418,7 +418,22 @@
                 url:   'resp.php',
                 type:  'post',
                 success:  function (response) { 
-												alert(response);
+                        alert(response);
+                        var parametros = {
+                            "objetivo":"ou",
+                            "accion" : "buscar",
+                            "busqueda" :"*" 
+                        };
+                        $.ajax({
+                              data:  parametros,
+                              url:   'resp.php',
+                              type:  'post',
+                              success:  function (response) {
+                                      $(".filas").html(response);
+                                      $.getScript("ver-info-ou.js", function(){
+                                      })
+                              }
+                        }) 
                 }
           });
         }
@@ -448,14 +463,29 @@
                 url:   'resp.php',
                 type:  'post',
                 success:  function (response) {
-												alert("Se ha eliminado con exito, refresca la página");
+                        alert("Se ha eliminado con exito");
+                        var parametros = {
+                            "objetivo":"ou",
+                            "accion" : "buscar",
+                            "busqueda" :"*" 
+                        };
+                        $.ajax({
+                              data:  parametros,
+                              url:   'resp.php',
+                              type:  'post',
+                              success:  function (response) {
+                                      $(".filas").html(response);
+                                      $.getScript("ver-info-ou.js", function(){
+                                      })
+                              }
+                        }) 
                 }
           });
         }
       });
       $(".boton-buscar").click(function(){
         var parametros = {
-            "objetivo":"",
+            "objetivo":"ou",
             "accion" : "buscar",
             "busqueda" :$(".input-buscar").val() + "*" 
           };
@@ -465,7 +495,7 @@
               type:  'post',
               success:  function (response) {
                       $(".filas").html(response);
-                      $.getScript("ver-info.js", function(){
+                      $.getScript("ver-info-ou.js", function(){
                       })
               }
         })

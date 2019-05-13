@@ -70,9 +70,9 @@ class Usuario{
     }
     function buscar($conexion){
         $justthese = array("ou","description");
-        $sr=ldap_search($conexion,"dc=ldap, dc=es","ou=".$_POST['nombre']);
+        $sr=ldap_search($conexion,"dc=ldap, dc=es","cn=".$_POST['nombre']);
         $info = ldap_get_entries($conexion,$sr);
-        $arrayrespuesta = array($info[0]["ou"][0],$info[0]["description"][0]);
+        $arrayrespuesta = array($info[0]["cn"][0],$info[0]["description"][0]);
         echo json_encode($arrayrespuesta);
     }
 

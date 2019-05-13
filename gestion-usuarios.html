@@ -296,66 +296,6 @@
                     <td>Trident</td>
                     <td>Marín</td>
                   </tr>
-                  <tr class="gradeX">
-                    <td>John</td>
-                    <td>Snow</td>
-                  </tr>
-                  <tr class="gradeX">
-                    <td>John</td>
-                    <td>Snow</td>
-                  </tr>
-                  <tr class="gradeX">
-                    <td>John</td>
-                    <td>Snow</td>
-                  </tr>
-                  <tr class="gradeX">
-                    <td>John</td>
-                    <td>Snow</td>
-                  </tr>
-                  <tr class="gradeX">
-                    <td>John</td>
-                    <td>Snow</td>
-                  </tr>
-                  <tr class="gradeX">
-                    <td>John</td>
-                    <td>Snow</td>
-                  </tr>
-                  <tr class="gradeX">
-                    <td>John</td>
-                    <td>Snow</td>
-                  </tr>
-                  <tr class="gradeX">
-                    <td>John</td>
-                    <td>Snow</td>
-                  </tr>
-                  <tr class="gradeX">
-                    <td>John</td>
-                    <td>Snow</td>
-                  </tr>
-                  <tr class="gradeX">
-                    <td>John</td>
-                    <td>Snow</td>
-                  </tr>
-                  <tr class="gradeX">
-                    <td>John</td>
-                    <td>Snow</td>
-                  </tr>
-                  <tr class="gradeX">
-                    <td>John</td>
-                    <td>Snow</td>
-                  </tr>
-                  <tr class="gradeX">
-                    <td>John</td>
-                    <td>Snow</td>
-                  </tr>
-                  <tr class="gradeX">
-                    <td>John</td>
-                    <td>Snow</td>
-                  </tr>
-                  <tr class="gradeX">
-                    <td>John</td>
-                    <td>Snow</td>
-                  </tr>
                 </tbody>
               </table>
             </div>
@@ -370,6 +310,10 @@
               <div class="input">
                 <p>Usuario</p>
                 <input  class="input-usuario" type="input" value="Juan" readonly required="required">
+              </div>
+              <div class="input">
+                <p>Contrasenya</p>
+                <input  class="input-contrasenya" type="password" readonly required="required">
               </div>
               <div class="input">
                   <p>Nombre</p>
@@ -545,6 +489,25 @@
           });
         }
       });
+
+      $(".boton-buscar").click(function(){
+        var parametros = {
+            "objetivo":"ou",
+            "accion" : "buscar",
+            "busqueda" :$(".input-buscar").val() + "*" 
+          };
+        $.ajax({
+              data:  parametros,
+              url:   'resp.php',
+              type:  'post',
+              success:  function (response) {
+                      $(".filas").html(response);
+                      $.getScript("ver-info.js", function(){
+                      });
+              }
+        })
+      });  
+
     });
     </script>
 </body>
