@@ -20,6 +20,9 @@ class grupo{
     function setNombre($nombre){
         $this->nombre = $nombre;
     }
+    function setRuta($ruta){
+        $this->ruta = $ruta;
+    }
     function setIdGrupo($idgrupo){
         $this->idgrupo = $idgrupo;
     }
@@ -27,28 +30,51 @@ class grupo{
         $this->ou = $ou;
     }
     function eliminar($conexion){
-        echo $this->ruta;
-        // DESCOMENTA ESTO ldap_delete($conexion,$ruta);
+        ldap_delete($conexion,$ruta);
     }
     function agregar($conexion){
-        $this->$info['objectClass'] = "posixGroup";
-        $this->$info['cn'] = $this->getNombre();
-        $this->$info['gidNumber'] = $this->getIdGrupo();
+        $info['objectClass'] = "posixGroup";
+        $info['cn'] = $_POST['nombre'];
+        $info['gidNumber'] = $_POST['id'];
 
-        if(isset($_POST['ou']) != null)
-
-        echo $this->getRuta();
-        //ldap_add($conexion,$this->getRuta(),$info);
-    }
-    public function __construct($id,$nombre,$ou){
-        $this->id = $id;
-        $this->nombre = $nombre;
-        if($ou != null){
-            $this->ou = $ou;
-            $this->ruta = "cn=".$this->$nombre.",ou=".$this->ou.",dc=ldap,dc=es";
+        if(!empty($_POST['ou'])){
+            $this->setRuta("cn=".$_POST['nombre'].",ou=".$_POST['ou'].",dc=ldap,dc=es");
         }
         else{
-            $this->ruta = "cn=".$this->nombre.",dc=ldap,dc=es";
+            $this->setRuta("cn=".$_POST['nombre'].",dc=ldap,dc=es");
+        }
+        echo $this->getRuta();
+        ldap_add($conexion,$this->getRuta(),$info);
+    }
+    
+    function buscar($conexion){
+        $filtro = "(&(cn=".$_POST['busqueda'].")(objectClass=posixGroup))";
+        $sr = ldap_search($conexion,"dc=ldap, dc=es",$filtro);
+        $info = ldap_get_entries($conexion,$sr);
+        for ($i=0; $i<$info["count"]; $i++) {
+            echo "
+            <tr class='gradeX'>
+                <td><p class='p$i'>".$info[$i]["cn"][0]."</p></td>
+            </tr> ";
+        }
+    }
+    /*
+    function buscar_o($conexion){
+        $justthese = array("cn","description");
+        $sr=ldap_search($conexion,"dc=ldap, dc=es","cn=".$_POST['nombre']);
+        $info = ldap_get_entries($conexion,$sr);
+        $arrayrespuesta = array(
+            $info[0]["cn"][0],
+            $info[0]["description"][0]);
+        
+        print_r(ldap_explode_dn($this->getRuta(),0));
+        /*die;
+    
+        echo json_encode($arrayrespuesta);
+}*/
+    public function __construct(){
+        if(!empty($_POST['ou'])){
+            $this->ou= $_POST['ou'];
         }
     }
 }

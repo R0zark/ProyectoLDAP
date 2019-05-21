@@ -77,7 +77,7 @@ class Usuario{
         }
     }
     function buscar($conexion){
-        $sr=ldap_search($conexion,"dc=ldap, dc=es","(&(objectClass=posixAccount))");
+        $sr=ldap_search($conexion,"dc=ldap, dc=es","(&(objectClass=posixAccount)(cn=".$_POST['busqueda']."))");
         $info = ldap_get_entries($conexion,$sr);
         for ($i=0; $i<$info["count"]; $i++) {
             echo "
@@ -100,7 +100,6 @@ class Usuario{
         );
         echo json_encode($arrayrespuesta);
     }
-
     public function __construct($id,$usuario,$contrasenya,$nombre,$apellidos,$idgrupo){
         $this->id = $id;
         $this->usuario = strtolower($usuario);

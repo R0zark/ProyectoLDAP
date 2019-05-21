@@ -1,4 +1,5 @@
 <?php 
+session_start();
 require('ou.php');
 require('usuario.php');
 require('grupo.php');
@@ -13,7 +14,7 @@ catch(Exception $e ){
 }
 switch($_POST['objetivo']){
     case "ou":
-        if(isset($_POST['nombre'])){
+        if(!empty($_POST['nombre'])){
             $ou= new ou($_POST['nombre']);
         }
         else{
@@ -21,7 +22,7 @@ switch($_POST['objetivo']){
         }
         break;
     case "usuario":
-        if(isset($_POST['usuario'])){
+        if(!empty($_POST['usuario'])){
             $usuario= new usuario(
                 $_POST['id'],
                 $_POST['usuario'],
@@ -35,7 +36,9 @@ switch($_POST['objetivo']){
         }
         break;
     case "grupo":
-        $grupo= new grupo($nombre,$id); 
+       
+    
+        $grupo= new grupo(); 
         break;
 }
 switch($_POST['accion']) {
@@ -79,5 +82,16 @@ switch($_POST['accion']) {
         if(isset($grupo))
             $grupo->buscar_o($conexion);
         break;
+    case "sesion":
+        if(isset($usuario))
+            
+        if(isset($ou))
+            $_SESSION['nombre'] = $ou->getNombre();
+            $_SESSION['descripcion'] = $ou->getDescripcion();
+            $_SESSION['ruta'] = $ou->getRuta();
+        if(isset($grupo))
+            
+        break;
+
 }
 ?>

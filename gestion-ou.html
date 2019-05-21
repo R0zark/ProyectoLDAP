@@ -260,7 +260,7 @@
               </a>
           </li>
           <li class="sub-menu">
-            <a href="javascript:;">
+            <a href="gestion-grupos.html">
               <i class="fa fa-cogs"></i>
               <span>Grupos</span>
               </a>
@@ -312,8 +312,8 @@
             <button  id="modificar" class="btn btn-info" value=""><i class="fa fa-cog"></i> Modificar</button>
             <button class="btn btn-danger-usuario" value=""> <i class="glyphicon glyphicon-trash"></i> Eliminar</button>
             <button class="btn btn-cancelar" value="">Cancelar</button>
-            <button class="btn btn-success-usuario btn-aceptar" value=""> <i class="fa fa-check"></i>Aceptar</button>
             <button class="btn btn-success-usuario btn-aceptar-anyadir" value=""> <i class="fa fa-check"></i>Aceptar</button>
+            <button class="btn btn-success-usuario btn-aceptar-modificar" value=""> <i class="fa fa-check"></i>Aceptar</button>
         </div>
         <!-- /row -->
       </section>
@@ -358,6 +358,7 @@
     $(document).ready(function(){
       
       $(".btn-aceptar").hide();
+      $(".btn-aceptar-modificar").hide();
       $(".btn-aceptar-anyadir").hide();
       $(".btn-cancelar").hide();
       $("#modificar").click(function(){
@@ -367,10 +368,23 @@
           $(".mb h4").text("Modificar Unidad Organizativa");
           $(".btn-success-usuario").hide();
           $(".form-usuario-panel input, textarea").removeAttr("readonly");
-          $(".btn-aceptar").fadeIn();
+          $(".btn-aceptar-modificar").fadeIn();
           $(".btn-danger-usuario").hide();
           $(".btn-cancelar").fadeIn();
-          
+
+          var parametros = {
+                "accion" : "sesion",
+                "objetivo": "ou",
+                "nombre" : $(".input-nombre").val(),
+                "descripcion" : $(".input-descripcion").val()
+          };
+          $.ajax({
+                data:  parametros,
+                url:   'resp.php',
+                type:  'post',
+                success:function (response){      
+                }
+          });
       });
       $(".btn-aceptar").click(function(){
           $("#modificar").fadeIn();
@@ -393,6 +407,7 @@
           $(".btn-danger-usuario").fadeIn();
           $("#modificar").fadeIn();
           $(".btn-aceptar-anyadir").hide();
+          $(".btn-aceptar-modificar").hide();
           $(".form-usuario-panel").removeAttr("style");
           $(".content-usuario-panel").fadeIn();
           $(".mb h4").text("Información de la Unidad Organizativa");
@@ -403,6 +418,7 @@
           $(".form-usuario-panel input,textarea").attr("readonly",true);
           $(this).hide();
           $(".btn-aceptar").hide();
+          $(".btn-aceptar-modificar").hide();
           $(".btn-danger-usuario").fadeIn();
           $("#modificar").fadeIn();
           $(".btn-cancelar").hide();
@@ -441,6 +457,50 @@
         }
       });
 
+      $(".btn-aceptar-modificar").click(function(){
+          $(".btn-success-usuario").fadeIn();
+          $(".form-usuario-panel input,textarea").attr("readonly",true);
+          $(this).hide();
+          $(".btn-aceptar-modificar").hide();
+          $(".btn-aceptar-").hide();
+          $(".btn-aceptar-anyadir").hide();
+          $(".btn-danger-usuario").fadeIn();
+          $("#modificar").fadeIn();
+          $(".btn-cancelar").hide();
+          $(".content-usuario-panel").fadeIn();
+          $(".form-usuario-panel").removeAttr("style");
+          if(confirm("Desea modificar la Unidad Organizativa: " + $(".input-nombre").val() + "?")){
+          var parametros = {
+                "accion" : "modificar",
+                "objetivo": "ou",
+                "nombre" : $(".input-nombre").val(),
+                "descripcion" : $(".input-descripcion").val()
+          };
+          $.ajax({
+                data:  parametros,
+                url:   'resp.php',
+                type:  'post',
+                success:  function (response) { 
+                        alert(response);
+                        var parametros = {
+                            "objetivo":"ou",
+                            "accion" : "buscar",
+                            "busqueda" :"*" 
+                        };
+                        $.ajax({
+                              data:  parametros,
+                              url:   'resp.php',
+                              type:  'post',
+                              success:  function (response) {
+                                      $(".filas").html(response);
+                                      $.getScript("ver-info-grupo.js", function(){
+                                      })
+                              }
+                        }) 
+                }
+          });
+        }
+      });
       $(".btn-anyadir").click(function(){
           $(this).hide();
           $(".btn-cancelar").fadeIn();
@@ -507,10 +567,6 @@
               }
         })
       });  
-    
-     
-
-
   });
     </script>
 </body>
