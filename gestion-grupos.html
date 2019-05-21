@@ -478,6 +478,7 @@
           var parametros = {
             "accion": "eliminar",
             "objetivo": "grupo",
+            "ou": $(".input-ou").val(),
             "nombre": $(".input-nombre").val(),
             "descripcion": $(".input-descripcion").val()
           };
@@ -487,6 +488,8 @@
             type: 'post',
             success: function (response) {
               alert("Se ha eliminado con exito");
+
+              alert(response);
 
               $(".input input ,textarea").val("");
 

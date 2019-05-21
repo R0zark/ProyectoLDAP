@@ -382,7 +382,7 @@
                 data:  parametros,
                 url:   'resp.php',
                 type:  'post',
-                success:function (response){      
+                success:function (response){    
                 }
           });
       });
@@ -424,7 +424,7 @@
           $(".btn-cancelar").hide();
           $(".content-usuario-panel").fadeIn();
           $(".form-usuario-panel").removeAttr("style");
-          if(confirm("Desea añadir la Unidad Organizativa: " + $(".input-nombre").val() + "?")){
+          if(confirm("¿Desea añadir la Unidad Organizativa: " + $(".input-nombre").val() + "?")){
           var parametros = {
                 "accion" : "agregar",
                 "objetivo": "ou",
@@ -469,7 +469,7 @@
           $(".btn-cancelar").hide();
           $(".content-usuario-panel").fadeIn();
           $(".form-usuario-panel").removeAttr("style");
-          if(confirm("Desea modificar la Unidad Organizativa: " + $(".input-nombre").val() + "?")){
+          if(confirm("¿Desea modificar la Unidad Organizativa a : " + $(".input-nombre").val() + "?")){
           var parametros = {
                 "accion" : "modificar",
                 "objetivo": "ou",
@@ -481,7 +481,6 @@
                 url:   'resp.php',
                 type:  'post',
                 success:  function (response) { 
-                        alert(response);
                         var parametros = {
                             "objetivo":"ou",
                             "accion" : "buscar",
@@ -493,7 +492,7 @@
                               type:  'post',
                               success:  function (response) {
                                       $(".filas").html(response);
-                                      $.getScript("ver-info-grupo.js", function(){
+                                      $.getScript("ver-info-ou.js", function(){
                                       })
                               }
                         }) 

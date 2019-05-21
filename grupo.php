@@ -30,11 +30,12 @@ class grupo{
         $this->ou = $ou;
     }
     function eliminar($conexion){
-        ldap_delete($conexion,$ruta);
+        ldap_delete($conexion,$this->getRuta());
     }
     function agregar($conexion){
         $info['objectClass'] = "posixGroup";
         $info['cn'] = $_POST['nombre'];
+        $info['description'] = $_POST['descripcion'];
         $info['gidNumber'] = $_POST['id'];
 
         if(!empty($_POST['ou'])){
@@ -58,23 +59,42 @@ class grupo{
             </tr> ";
         }
     }
-    /*
     function buscar_o($conexion){
         $justthese = array("cn","description");
-        $sr=ldap_search($conexion,"dc=ldap, dc=es","cn=".$_POST['nombre']);
+        $filtro="(&(cn=".$_POST['nombre'].")(objectClass=posixGroup))";
+        $sr=ldap_search($conexion,"dc=ldap, dc=es",$filtro);
         $info = ldap_get_entries($conexion,$sr);
-        $arrayrespuesta = array(
-            $info[0]["cn"][0],
-            $info[0]["description"][0]);
-        
-        print_r(ldap_explode_dn($this->getRuta(),0));
-        /*die;
-    
+
+        if(!empty($info[0]["description"][0])){
+            $arrayrespuesta = array(
+                $info[0]["cn"][0],
+                $info[0]["gidnumber"][0],
+                $info[0]["description"][0],
+                $info[0]["dn"]);
+        }
+        else{
+            $arrayrespuesta = array(
+                $info[0]["cn"][0],
+                $info[0]["gidnumber"][0],
+                $info[0]["description"][0] = "",
+                $info[0]["dn"]
+            ); 
+        }
         echo json_encode($arrayrespuesta);
-}*/
-    public function __construct(){
+    }
+    public function __construct($nombre){
         if(!empty($_POST['ou'])){
             $this->ou= $_POST['ou'];
+            $this->ruta =  "cn=".$nombre.",ou=".$_POST['ou'].",dc=ldap,dc=es";
+        }
+        else{
+            $this->ruta =  "cn=".$nombre.",dc=ldap,dc=es";
+        }
+        if(empty($_POST['descripcion'])){
+            $this->descripcion = "Grupo de " . $this->getNombre();
+        }
+        else{
+            $this->descripcion = $_POST['descripcion'];
         }
     }
 }

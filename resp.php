@@ -36,9 +36,12 @@ switch($_POST['objetivo']){
         }
         break;
     case "grupo":
-       
-    
-        $grupo= new grupo(); 
+        if(!empty($_POST['nombre'])){
+            $grupo= new grupo($_POST['nombre']);
+        }
+        else{
+            $grupo= new grupo(null); 
+        }
         break;
 }
 switch($_POST['accion']) {
@@ -83,15 +86,15 @@ switch($_POST['accion']) {
             $grupo->buscar_o($conexion);
         break;
     case "sesion":
-        if(isset($usuario))
-            
-        if(isset($ou))
+        if(!empty($usuario))
+            //$_SESSION['nombre'] = $usuario->getNombre();
+            //$_SESSION['ruta'] = $usuario->getRuta();
+        if(!empty($ou))
             $_SESSION['nombre'] = $ou->getNombre();
-            $_SESSION['descripcion'] = $ou->getDescripcion();
             $_SESSION['ruta'] = $ou->getRuta();
-        if(isset($grupo))
-            
+        if(!empty($grupo))
+            //$_SESSION['nombre'] = $grupo->getNombre();
+            //$_SESSION['ruta'] = $grupo->getRuta();
         break;
-
 }
 ?>

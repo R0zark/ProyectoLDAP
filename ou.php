@@ -33,19 +33,14 @@ class ou{
     }
 
     function modificar($conexion){
-        /*
-        $info['objectClass'][0] = "top";
-        $info['objectClass'][1] = "organizationalUnit";*/
         $info['ou'] = $this->getNombre();
-        $info['description'] = $_POST['descripcion'];
+        $info['description'] = $this->getDescripcion();
 
-        echo
-        
         $auto=ldap_rename($conexion,$_SESSION['ruta'],"ou=".$this->getNombre(),"dc=ldap,dc=es",true);
+        die;
         $auto=ldap_modify($conexion,$this->getRuta(),$info);
-        echo"Unidad organizativa: ".$this->getNombre()." en la ruta ". $this->getRuta(). " modificará la ruta: ".$_SESSION['ruta'];
+        echo"Unidad organizativa: ".$this->getNombre()." en la ruta ". $this->getRuta(). " va a modificar la ruta: ".$_SESSION['ruta'];
     }
-
     function buscar($conexion){
         $sr=ldap_search($conexion,"dc=ldap, dc=es","ou=".$_POST['busqueda']);
         $info = ldap_get_entries($conexion,$sr);
@@ -56,7 +51,6 @@ class ou{
             </tr> ";
         }
     }
-
     function buscar_o($conexion){
         $justthese = array("ou","description");
         $sr=ldap_search($conexion,"dc=ldap, dc=es","ou=".$_POST['nombre']);
