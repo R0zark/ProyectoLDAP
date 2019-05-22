@@ -50,7 +50,8 @@ class Usuario{
     }
     function eliminar($conexion){
         try{
-            ldap_delete($conexion,$this->ruta);
+            echo $this->getRuta();
+            $auto=ldap_delete($conexion,$this->ruta);
             echo"Usuario eliminado: ".$this->getUsuario();
         }
         catch(Exception $e){
@@ -65,10 +66,10 @@ class Usuario{
             $info['sn'] = $this->getApellidos();
             $info['uid'] = $this->getUsuario();
             $info['uidNumber'] = $this->getId();
-            $info['gidNumber'] = $this->getIdGrupo();
+            $info['gidNumber'] = $_POST['idgrupo'];
             $info['loginShell'] = "/bin/bash";
             $info['homeDirectory'] = "/home/".$this->getUsuario();
-            $info['userPassword'] = '{MD5}' . base64_encode(pack('H*',md5($this->getContrasenya())));
+            $info['userPassword'] = '{MD5}' . md5($this->getContrasenya(),true);
             $auto=ldap_add($conexion,$this->getRuta(),$info);
             echo"Usuario a agregado: ".$this->getUsuario()." en la ruta ". $this->getRuta();
         }

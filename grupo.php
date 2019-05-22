@@ -78,6 +78,19 @@ class grupo{
             </tr> ";
         }
     }
+    
+    function buscar_disponibles($conexion){
+        $filtro = "(&(cn=".$_POST['busqueda'].")(objectClass=posixGroup))";
+        $sr=ldap_search($conexion,"dc=ldap, dc=es",$filtro);
+        $info = ldap_get_entries($conexion,$sr);
+            echo "<option value=''>NADA</option>";
+        for ($i=0; $i<$info["count"]; $i++) {
+            echo "
+            <option value='".$info[$i]["gidnumber"][0]."'>".$info[$i]["cn"][0]."</option>";
+        }
+    }
+
+
     function buscar_o($conexion){
         $justthese = array("cn","description");
         $filtro="(&(cn=".$_POST['nombre'].")(objectClass=posixGroup))";

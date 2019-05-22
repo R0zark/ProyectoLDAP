@@ -247,12 +247,6 @@
         <ul class="sidebar-menu" id="nav-accordion">
           <p class="centered"><a href="profile.html"><img src="img/ui-sam.jpg" class="img-circle" width="80"></a></p>
           <h5 class="centered">Administrador</h5>
-          <li class="mt">
-            <a href="index.html">
-              <i class="fa fa-dashboard"></i>
-              <span>Dashboard</span>
-              </a>
-          </li>
           <li class="sub-menu">
             <a href="gestion-usuarios.html">
               <i class="fa fa-desktop"></i>
@@ -320,8 +314,10 @@
                     <input  class="input-apellidos"type="input" value="" readonly required="required">
               </div>
               <div class="input">
-                  <p>ID Grupo</p>
-                  <input class="input-grupo" type="input" value="" readonly required="required">
+                <p>Grupo</p>
+                <select class="grupos-disponibles">
+                  <option value="">NADA</option>
+                </select>
               </div>
             </div>
             <br>
@@ -378,6 +374,20 @@
       $(".btn-aceptar-anyadir").hide();
       $(".btn-cancelar").hide();
       $(".input-contrasenya").hide();
+
+      var parametros = {
+          "objetivo": "grupo",
+          "accion": "buscar_disponibles",
+          "busqueda": "*"
+        };
+        $.ajax({
+          data: parametros,
+          url: 'resp.php',
+          type: 'post',
+          success: function (response) {
+            $(".grupos-disponibles").html(response);
+          }
+        })
 
       var resguardo =[];
       $("#modificar").click(function(){
@@ -440,7 +450,7 @@
                 "nombre" : $(".input-nombre").val(),
                 "contrasenya" : $(".input-contrasenya").val(),
                 "apellidos" : $(".input-apellidos").val(),
-                "idgrupo" : $(".input-grupo").val(),
+                "idgrupo" : $(".grupos-disponibles").val(),
                 "id" : $(".input-id").val()
           };
           $.ajax({
@@ -448,8 +458,22 @@
                 url:   'resp.php',
                 type:  'post',
                 success:  function (response) {
-                        
-												alert(response);
+                        alert(response);
+                        var parametros = {
+                            "objetivo":"usuario",
+                            "accion" : "buscar",
+                            "busqueda" :"*" 
+                        };
+                        $.ajax({
+                              data:  parametros,
+                              url:   'resp.php',
+                              type:  'post',
+                              success:  function (response) {
+                                      $(".filas").html(response);
+                                      $.getScript("ver-info-usuario.js", function(){
+                                      })
+                              }
+                        })
                 }
           });
         }
@@ -478,7 +502,7 @@
                 "contrasenya" : $(".input-contrasenya").val(),
                 "nombre" : $(".input-nombre").val(),
                 "apellidos" : $(".input-apellidos").val(),
-                "idgrupo" : $(".input-grupo").val(),
+                "idgrupo" : $(".grupos-disponibles").val(),
                 "id" : $(".input-id").val()
           };
           $.ajax({

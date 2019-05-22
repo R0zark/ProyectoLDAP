@@ -30,7 +30,7 @@ switch($_POST['objetivo']){
                 $_POST['contrasenya'],
                 $_POST['nombre'],
                 $_POST['apellidos'],
-                $_POST['idgrupo']); 
+                $_POST['idgrupo']);
         }
         else{
             $usuario = new usuario(null,null,null,null,null,null);
