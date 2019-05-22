@@ -2,6 +2,7 @@
 class grupo{
     private $nombre;
     private $idgrupo;
+    private $descripcion;
     private $ou;
     private $ruta;
 
@@ -13,6 +14,9 @@ class grupo{
     }
     function getOU(){
         return $this->ou;
+    }
+    function getDescripcion(){
+        return $this->descripcion;
     }
     function getRuta(){
         return $this->ruta;
@@ -34,20 +38,35 @@ class grupo{
     }
     function agregar($conexion){
         $info['objectClass'] = "posixGroup";
-        $info['cn'] = $_POST['nombre'];
-        $info['description'] = $_POST['descripcion'];
-        $info['gidNumber'] = $_POST['id'];
-
+        $info['cn'] = $this->getNombre();
+        $info['description'] = $this->getDescripcion();
+        $info['gidNumber'] = $this->getIdGrupo();
+        
         if(!empty($_POST['ou'])){
-            $this->setRuta("cn=".$_POST['nombre'].",ou=".$_POST['ou'].",dc=ldap,dc=es");
+            $this->setRuta("cn=".$this->getNombre().",ou=".$_POST['ou'].",dc=ldap,dc=es");
         }
         else{
-            $this->setRuta("cn=".$_POST['nombre'].",dc=ldap,dc=es");
+            $this->setRuta("cn=".$this->getNombre().",dc=ldap,dc=es");
         }
-        echo $this->getRuta();
-        ldap_add($conexion,$this->getRuta(),$info);
+        $auto=ldap_add($conexion,$this->getRuta(),$info);
+
     }
-    
+
+    function modificar($conexion){
+        $info['cn'] = $this->getNombre();
+        $info['description'] = $this->getDescripcion();
+        $info['gidNumber']= $this->getIdGrupo();
+        if(empty($this->getOU())){
+            $auto=ldap_rename($conexion,$_SESSION['ruta'],"cn=".$this->getNombre(),"dc=ldap,dc=es",true);
+        }
+        else{
+            $this->getOU();
+            $auto=ldap_rename($conexion,$_SESSION['ruta'],"cn=".$this->getNombre(),"ou=".$this->getOU().",dc=ldap,dc=es",true);
+        }
+        $auto=ldap_modify($conexion,$this->getRuta(),$info);
+        echo"Unidad organizativa: ".$this->getNombre()." en la ruta ". $this->getRuta(). " va a modificar la ruta: ".$_SESSION['ruta'];
+    }
+
     function buscar($conexion){
         $filtro = "(&(cn=".$_POST['busqueda'].")(objectClass=posixGroup))";
         $sr = ldap_search($conexion,"dc=ldap, dc=es",$filtro);
@@ -83,6 +102,7 @@ class grupo{
         echo json_encode($arrayrespuesta);
     }
     public function __construct($nombre){
+        $this->nombre = $nombre;
         if(!empty($_POST['ou'])){
             $this->ou= $_POST['ou'];
             $this->ruta =  "cn=".$nombre.",ou=".$_POST['ou'].",dc=ldap,dc=es";
@@ -95,6 +115,12 @@ class grupo{
         }
         else{
             $this->descripcion = $_POST['descripcion'];
+        }
+        if(empty($_POST['id'])){
+            $this->idgrupo = "";
+        }
+        else{
+            $this->idgrupo = $_POST['id'];
         }
     }
 }

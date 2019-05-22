@@ -329,7 +329,7 @@
             <button  id="modificar" class="btn btn-info" value=""><i class="fa fa-cog"></i> Modificar</button>
             <button class="btn btn-danger-usuario" value=""> <i class="glyphicon glyphicon-trash"></i> Eliminar</button>
             <button class="btn btn-cancelar" value="">Cancelar</button>
-            <button class="btn btn-success-usuario btn-aceptar" value=""> <i class="fa fa-check"></i>Aceptar</button>
+            <button class="btn btn-success-usuario btn-aceptar-modificar" value=""> <i class="fa fa-check"></i>Aceptar</button>
             <button class="btn btn-success-usuario btn-aceptar-anyadir" value=""> <i class="fa fa-check"></i>Aceptar</button>
         </div>
         <!-- /row -->
@@ -374,7 +374,7 @@
 <script>
     $(document).ready(function(){
       
-      $(".btn-aceptar").hide();
+      $(".btn-aceptar-modificar").hide();
       $(".btn-aceptar-anyadir").hide();
       $(".btn-cancelar").hide();
       $(".input-contrasenya").hide();
@@ -387,7 +387,7 @@
           $(".mb h4").text("Modificar usuario");
           $(".btn-success-usuario").hide();
           $(".form-usuario-panel input").removeAttr("readonly");
-          $(".btn-aceptar").fadeIn();
+          $(".btn-aceptar-modificar").fadeIn();
           $(".btn-danger-usuario").hide();
           $(".btn-cancelar").fadeIn();
           $(".input-contrasenya").fadeIn();
@@ -410,7 +410,7 @@
           $(".btn-success-usuario").fadeIn();
           $(".form-usuario-panel input").attr("readonly",true);
           $(this).hide();
-          $(".btn-aceptar").hide();
+          $(".btn-aceptar-modificar").hide();
           $(".btn-danger-usuario").fadeIn();
           $("#modificar").fadeIn();
           $(".btn-aceptar-anyadir").hide();
@@ -423,13 +423,15 @@
 
       $(".btn-aceptar-anyadir").click(function(){
           $(".btn-success-usuario").fadeIn();
-          $(".form-usuario-panel input").attr("readonly",true);
+          $(".form-usuario-panel input,textarea").attr("readonly",true);
           $(this).hide();
           $(".btn-aceptar").hide();
+          $(".btn-aceptar-modificar").hide();
           $(".btn-danger-usuario").fadeIn();
           $("#modificar").fadeIn();
           $(".btn-cancelar").hide();
-          $(".input-contrasenya").fadeIn();
+          $(".content-usuario-panel").fadeIn();
+          $(".form-usuario-panel").removeAttr("style");
           if(confirm("Desea añadir al usuario: " + $(".input-usuario").val() + "?")){
           var parametros = {
                 "accion" : "agregar",

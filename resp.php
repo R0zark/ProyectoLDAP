@@ -4,6 +4,7 @@ require('ou.php');
 require('usuario.php');
 require('grupo.php');
 
+
 try{
     $conexion = ldap_connect('ldap.es', '389') or die("Vamos, que no funciona");
     ldap_set_option($conexion, LDAP_OPT_PROTOCOL_VERSION, 3);
@@ -77,6 +78,14 @@ switch($_POST['accion']) {
         if(isset($grupo))
             $grupo->buscar($conexion);
         break;
+    case "buscar_disponibles":
+        if(isset($usuario))
+            $usuario->buscar_disponibles($conexion);
+        if(isset($ou))
+            $ou->buscar_disponibles($conexion);
+        if(isset($grupo))
+            $grupo->buscar_disponibles($conexion);
+        break;
     case "buscar-o":
         if(isset($usuario))
             $usuario->buscar_o($conexion);
@@ -86,15 +95,17 @@ switch($_POST['accion']) {
             $grupo->buscar_o($conexion);
         break;
     case "sesion":
-        if(!empty($usuario))
-            //$_SESSION['nombre'] = $usuario->getNombre();
-            //$_SESSION['ruta'] = $usuario->getRuta();
-        if(!empty($ou))
+        if(isset($usuario)){
+            $_SESSION['nombre'] = $usuario->getNombre();
+            $_SESSION['ruta'] = $usuario->getRuta();
+        }
+        if(isset($ou)){
             $_SESSION['nombre'] = $ou->getNombre();
-            $_SESSION['ruta'] = $ou->getRuta();
-        if(!empty($grupo))
-            //$_SESSION['nombre'] = $grupo->getNombre();
-            //$_SESSION['ruta'] = $grupo->getRuta();
+            $_SESSION['ruta'] = $ou->getRuta();  
+        }
+        if(isset($grupo))
+            $_SESSION['nombre'] = $grupo->getNombre();
+            $_SESSION['ruta'] = $grupo->getRuta();
         break;
 }
 ?>

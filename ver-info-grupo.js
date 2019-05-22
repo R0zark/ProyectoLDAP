@@ -14,10 +14,10 @@ $(".gradeX td").click(function(){
                                           var dn = array[3];
                                           var ou = dn.split(',')[1]
                                           if(ou[0] == 'o'){
-                                                $(".input-ou").val(ou.split('=')[1]);
-                                          }
+                                                var valor= ou.split('=')[1];
+                                                $(".ou-disponibles option[value='"+valor+"']").attr("selected",true)                                       }
                                           else{
-                                                $(".input-ou").val("");
+                                                $(".ou-disponibles option[value='']").attr("selected",true)
                                           }
                                           $(".input-nombre").val(array[0]);
                                           $(".input-id").val(array[1]);
