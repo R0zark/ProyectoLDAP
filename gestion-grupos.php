@@ -1,3 +1,13 @@
+<?php
+session_start();
+if(empty($_SESSION['admin'])){
+  echo "Por favor vuelve a conectar, reenviando al login en 5 segundos";
+  header("refresh:5;url=login.html");
+  exit();
+}
+else{
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -31,13 +41,8 @@
     License: https://templatemag.com/license/
   ======================================================= -->
 </head>
-
 <body>
   <section id="container">
-    <!-- **********************************************************************************************************************************************************
-        TOP BAR CONTENT & NOTIFICATIONS
-        *********************************************************************************************************************************************************** -->
-    <!--header start-->
     <header class="header black-bg">
       <div class="sidebar-toggle-box">
         <div class="fa fa-bars tooltips" data-placement="right" data-original-title="Toggle Navigation"></div>
@@ -236,7 +241,7 @@
       </div>
       <div class="top-menu">
         <ul class="nav pull-right top-menu">
-          <li><a class="logout" href="login.html">Logout</a></li>
+          <li><a class="logout" href="del_session.php">Logout</a></li>
         </ul>
       </div>
     </header>
@@ -252,19 +257,19 @@
           <p class="centered"><a href="profile.html"><img src="img/ui-sam.jpg" class="img-circle" width="80"></a></p>
           <h5 class="centered">Administrador</h5>
           <li class="sub-menu">
-            <a href="gestion-usuarios.html">
+            <a href="gestion-usuarios.php">
               <i class="fa fa-desktop"></i>
               <span>Usuarios</span>
             </a>
           </li>
           <li class="sub-menu">
-            <a href="javascript:;">
+            <a href="gestion-grupos.php">
               <i class="fa fa-cogs"></i>
               <span>Grupos</span>
             </a>
           </li>
           <li class="sub-menu">
-            <a href="gestion-ou.html">
+            <a href="gestion-ou.php">
               <i class="fa fa-book"></i>
               <span>Unidades Organizativas</span>
             </a>

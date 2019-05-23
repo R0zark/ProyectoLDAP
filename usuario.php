@@ -77,6 +77,26 @@ class Usuario{
             echo"Ha ocurrido un error $e->getMessage()";
         }
     }
+
+    function modificar($conexion){
+            $info['objectClass'][0] = "inetOrgPerson";
+            $info['objectClass'][1] = "posixAccount";
+            $info['cn'] = $this->getNombre();
+            $info['sn'] = $this->getApellidos();
+            $info['uid'] = $this->getUsuario();
+            $info['uidNumber'] = $this->getId();
+            $info['gidNumber'] = $_POST['idgrupo'];
+            $info['loginShell'] = "/bin/bash";
+            $info['homeDirectory'] = "/home/".$this->getUsuario();
+            $info['userPassword'] = '{MD5}' . md5($this->getContrasenya(),true);
+            
+            $auto=ldap_rename($conexion,$_SESSION['ruta'],"uid=".$this->getUsuario(),"dc=ldap,dc=es",true);
+            $auto=ldap_modify($conexion,$this->getRuta(),$info);
+            echo"El usuario: ".$this->getUsuario()." en la ruta ". $this->getRuta(). " va a modificar la ruta: ".$_SESSION['ruta'];
+    }
+
+
+
     function buscar($conexion){
         $sr=ldap_search($conexion,"dc=ldap, dc=es","(&(objectClass=posixAccount)(cn=".$_POST['busqueda']."))");
         $info = ldap_get_entries($conexion,$sr);
@@ -108,7 +128,7 @@ class Usuario{
         $this->nombre = $nombre;
         $this->apellidos = $apellidos;
         $this->idgrupo = $idgrupo;
-        $this->ruta = "cn=".$this->usuario.",dc=ldap,dc=es";
+        $this->ruta = "uid=".$this->usuario.",dc=ldap,dc=es";
     }
 }
 ?>

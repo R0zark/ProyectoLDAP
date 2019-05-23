@@ -98,14 +98,18 @@ switch($_POST['accion']) {
         if(isset($usuario)){
             $_SESSION['nombre'] = $usuario->getNombre();
             $_SESSION['ruta'] = $usuario->getRuta();
+            print_r($_POST);
+            print_r($_SESSION);
+            var_dump($usuario);
         }
         if(isset($ou)){
             $_SESSION['nombre'] = $ou->getNombre();
             $_SESSION['ruta'] = $ou->getRuta();  
         }
-        if(isset($grupo))
+        if(isset($grupo)){
             $_SESSION['nombre'] = $grupo->getNombre();
             $_SESSION['ruta'] = $grupo->getRuta();
+        }
         break;
 }
 ?>

@@ -49,7 +49,7 @@ class grupo{
             $this->setRuta("cn=".$this->getNombre().",dc=ldap,dc=es");
         }
         $auto=ldap_add($conexion,$this->getRuta(),$info);
-
+        echo"Grupo: ".$this->getNombre()." en la ruta ". $this->getRuta(). " va a modificar la ruta: ".$_SESSION['ruta'];
     }
 
     function modificar($conexion){
@@ -64,7 +64,7 @@ class grupo{
             $auto=ldap_rename($conexion,$_SESSION['ruta'],"cn=".$this->getNombre(),"ou=".$this->getOU().",dc=ldap,dc=es",true);
         }
         $auto=ldap_modify($conexion,$this->getRuta(),$info);
-        echo"Unidad organizativa: ".$this->getNombre()." en la ruta ". $this->getRuta(). " va a modificar la ruta: ".$_SESSION['ruta'];
+        echo"Grupo: ".$this->getNombre()." en la ruta ". $this->getRuta(). " va a modificar la ruta: ".$_SESSION['ruta'];
     }
 
     function buscar($conexion){

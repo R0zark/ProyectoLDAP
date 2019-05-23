@@ -1,3 +1,13 @@
+<?php
+session_start();
+if(empty($_SESSION['admin'])){
+  echo "Por favor vuelve a conectar, reenviando al login en 5 segundos";
+  header("refresh:5;url=login.html");
+  exit();
+}
+else{
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -232,7 +242,7 @@
       </div>
       <div class="top-menu">
         <ul class="nav pull-right top-menu">
-          <li><a class="logout" href="login.html">Logout</a></li>
+          <li><a class="logout" href="del_session.php">Logout</a></li>
         </ul>
       </div>
     </header>
@@ -248,19 +258,19 @@
           <p class="centered"><a href="profile.html"><img src="img/ui-sam.jpg" class="img-circle" width="80"></a></p>
           <h5 class="centered">Administrador</h5>
           <li class="sub-menu">
-            <a href="gestion-usuarios.html">
+            <a href="gestion-usuarios.php">
               <i class="fa fa-desktop"></i>
               <span>Usuarios</span>
               </a>
           </li>
           <li class="sub-menu">
-            <a href="gestion-grupos.html">
+            <a href="gestion-grupos.php">
               <i class="fa fa-cogs"></i>
               <span>Grupos</span>
               </a>
           </li>
           <li class="sub-menu">
-            <a href="gestion-ou.html">
+            <a href="gestion-ou.php">
               <i class="fa fa-book"></i>
               <span>Unidades Organizativas</span>
               </a>
@@ -271,7 +281,7 @@
     </aside>
     <section id="main-content">
       <section class="wrapper">
-        <h3><i class="fa fa-angle-right"></i> Administración de Unidades Organizativas</h3>
+        <h3><i class="fa fa-angle-right"></i> Administración de Usuarios</h3>
         <div class="row mb">
           <!-- page start-->
           <div class="content-usuario-panel">
@@ -281,6 +291,7 @@
               <table cellpadding="0" cellspacing="0" border="0" class="display table table-bordered" id="hidden-table-info">
                 <thead>
                   <tr>
+                    <th>Usuario</th>
                     <th>Nombre</th>
                   </tr>
                 </thead>
@@ -290,15 +301,33 @@
             </div>
           </div>
           <div class="form-usuario-panel">
-            <h4 class="mb"><i class="fa fa-angle-right"></i> Información de la Unidad Organizativa</h4> <button class="btn btn-success-usuario btn-anyadir" value=""><i class="glyphicon glyphicon-plus"></i> Añadir OU</button>
+            <h4 class="mb"><i class="fa fa-angle-right"></i> Información del Usuario</h4> <button class="btn btn-success-usuario btn-anyadir" value=""><i class="glyphicon glyphicon-plus"></i> Añadir Usuario</button>
             <div class="contenido">
+              <div class="input">
+                  <p>ID</p>
+                  <input class="input-id" type="input" value="" readonly required="required">
+              </div>
+              <div class="input">
+                <p>Usuario</p>
+                <input  class="input-usuario" type="input" value="" readonly required="required">
+              </div>
+              <div class="input-contrasenya">
+                <p>Contraseña</p>
+                <input  class="input-contrasenya" type="password" readonly required="required">
+              </div>
               <div class="input">
                   <p>Nombre</p>
                   <input class="input-nombre" type="input" value="" readonly required="required">
               </div>
               <div class="input">
-                  <p>Descripcción</p>
-                  <textarea class="form-control input-descripcion" readonly required="required" placeholder="Escribe una descripción aquí"></textarea>
+                    <p>Apellidos</p>
+                    <input  class="input-apellidos"type="input" value="" readonly required="required">
+              </div>
+              <div class="input">
+                <p>Grupo</p>
+                <select class="grupos-disponibles">
+                  <option value="">NADA</option>
+                </select>
               </div>
             </div>
             <br>
@@ -306,8 +335,8 @@
             <button  id="modificar" class="btn btn-info" value=""><i class="fa fa-cog"></i> Modificar</button>
             <button class="btn btn-danger-usuario" value=""> <i class="glyphicon glyphicon-trash"></i> Eliminar</button>
             <button class="btn btn-cancelar" value="">Cancelar</button>
-            <button class="btn btn-success-usuario btn-aceptar-anyadir" value=""> <i class="fa fa-check"></i>Aceptar</button>
             <button class="btn btn-success-usuario btn-aceptar-modificar" value=""> <i class="fa fa-check"></i>Aceptar</button>
+            <button class="btn btn-success-usuario btn-aceptar-anyadir" value=""> <i class="fa fa-check"></i>Aceptar</button>
         </div>
         <!-- /row -->
       </section>
@@ -351,61 +380,86 @@
 <script>
     $(document).ready(function(){
       
-      $(".btn-aceptar").hide();
       $(".btn-aceptar-modificar").hide();
       $(".btn-aceptar-anyadir").hide();
       $(".btn-cancelar").hide();
+      $(".input-contrasenya").hide();
+
+      var parametros = {
+          "objetivo": "grupo",
+          "accion": "buscar_disponibles",
+          "busqueda": "*"
+        };
+        $.ajax({
+          data: parametros,
+          url: 'resp.php',
+          type: 'post',
+          success: function (response) {
+            $(".grupos-disponibles").html(response);
+          }
+        })
+
+      var resguardo =[];
       $("#modificar").click(function(){
           $(this).hide();
           $(".content-usuario-panel").hide();
           $(".form-usuario-panel").css("width","100%");
-          $(".mb h4").text("Modificar Unidad Organizativa");
+          $(".mb h4").text("Modificar usuario");
           $(".btn-success-usuario").hide();
-          $(".form-usuario-panel input, textarea").removeAttr("readonly");
+          $(".form-usuario-panel input").removeAttr("readonly");
           $(".btn-aceptar-modificar").fadeIn();
           $(".btn-danger-usuario").hide();
           $(".btn-cancelar").fadeIn();
-
-          var parametros = {
+          $(".input-contrasenya").fadeIn();
+  
+        var parametros = {
                 "accion" : "sesion",
-                "objetivo": "ou",
+                "objetivo": "usuario",
                 "nombre" : $(".input-nombre").val(),
-                "descripcion" : $(".input-descripcion").val()
+                "id" : $(".input-id").val(),
+                "usuario" : $(".input-usuario").val(),
+                "apellidos" : $(".input-apellidos").val(),
+                "contrasenya" : $(".input-contrasenya").val(),
+                "idgrupo"  : $(".grupos-disponibles").val(),
           };
           $.ajax({
                 data:  parametros,
                 url:   'resp.php',
                 type:  'post',
-                success:function (response){    
+                success:function (response){
                 }
           });
+
+
       });
       $(".btn-aceptar").click(function(){
           $("#modificar").fadeIn();
           $(".btn-success-usuario").fadeIn();
-          $(".form-usuario-panel input,textarea").attr("readonly",true);
+          $(".form-usuario-panel input").attr("readonly",true);
           $(this).hide();
           $(".btn-aceptar-anyadir").hide();
           $(".content-usuario-panel").fadeIn();
           $(".btn-danger-usuario").fadeIn();
           $(".btn-cancelar").hide();
-          $(".mb h4").text("Información de la Unidad Organizativa");
+          $(".input-contrasenya").fadeIn();
+          $(".mb h4").text("Información del Usuario");
           $(".form-usuario-panel").removeAttr("style");
       });
 
       $(".btn-cancelar").click(function(){
           $(".btn-success-usuario").fadeIn();
-          $(".form-usuario-panel input,textarea").attr("readonly",true);
+          $(".form-usuario-panel input").attr("readonly",true);
           $(this).hide();
-          $(".btn-aceptar").hide();
+          $(".btn-aceptar-modificar").hide();
           $(".btn-danger-usuario").fadeIn();
           $("#modificar").fadeIn();
           $(".btn-aceptar-anyadir").hide();
-          $(".btn-aceptar-modificar").hide();
           $(".form-usuario-panel").removeAttr("style");
           $(".content-usuario-panel").fadeIn();
-          $(".mb h4").text("Información de la Unidad Organizativa");
+          $(".input-contrasenya").fadeOut();
+          $(".mb h4").text("Información del Usuario");
       });
+
 
       $(".btn-aceptar-anyadir").click(function(){
           $(".btn-success-usuario").fadeIn();
@@ -418,21 +472,25 @@
           $(".btn-cancelar").hide();
           $(".content-usuario-panel").fadeIn();
           $(".form-usuario-panel").removeAttr("style");
-          if(confirm("¿Desea añadir la Unidad Organizativa: " + $(".input-nombre").val() + "?")){
-            var parametros = {
+          if(confirm("Desea añadir al usuario: " + $(".input-usuario").val() + "?")){
+          var parametros = {
                 "accion" : "agregar",
-                "objetivo": "ou",
+                "objetivo": "usuario",
+                "usuario" : $(".input-usuario").val(),
                 "nombre" : $(".input-nombre").val(),
-                "descripcion" : $(".input-descripcion").val()
-            };
+                "contrasenya" : $(".input-contrasenya").val(),
+                "apellidos" : $(".input-apellidos").val(),
+                "idgrupo" : $(".grupos-disponibles").val(),
+                "id" : $(".input-id").val()
+          };
           $.ajax({
                 data:  parametros,
                 url:   'resp.php',
                 type:  'post',
-                success:  function (response) { 
+                success:  function (response) {
                         alert(response);
                         var parametros = {
-                            "objetivo":"ou",
+                            "objetivo":"usuario",
                             "accion" : "buscar",
                             "busqueda" :"*" 
                         };
@@ -442,18 +500,32 @@
                               type:  'post',
                               success:  function (response) {
                                       $(".filas").html(response);
-                                      $.getScript("ver-info-ou.js", function(){
+                                      $.getScript("ver-info-usuario.js", function(){
                                       })
                               }
-                        }) 
+                        })
                 }
           });
         }
       });
 
+      $(".btn-anyadir").click(function(){
+          $(this).hide();
+          $(".btn-cancelar").fadeIn();
+          $(".form-usuario-panel input").removeAttr("readonly");
+          $(".btn-aceptar-anyadir").fadeIn();
+          $(".btn-danger-usuario").hide();
+          $("#modificar").hide();
+          $(".form-usuario-panel input").val("");
+          $(".mb h4").text("Añadir Usuario");
+          $(".content-usuario-panel").hide();
+          $(".form-usuario-panel").css("width","100%");
+          $(".input-contrasenya").fadeIn();
+      });
+
       $(".btn-aceptar-modificar").click(function(){
           $(".btn-success-usuario").fadeIn();
-          $(".form-usuario-panel input,textarea").attr("readonly",true);
+          $(".form-usuario-panel input").attr("readonly",true);
           $(this).hide();
           $(".btn-aceptar-modificar").hide();
           $(".btn-aceptar-").hide();
@@ -463,20 +535,26 @@
           $(".btn-cancelar").hide();
           $(".content-usuario-panel").fadeIn();
           $(".form-usuario-panel").removeAttr("style");
-          if(confirm("¿Desea modificar la Unidad Organizativa a : " + $(".input-nombre").val() + "?")){
+          if(confirm("¿Desea modificar el Usuario : " + $(".input-nombre").val() + "?")){
+            
           var parametros = {
                 "accion" : "modificar",
-                "objetivo": "ou",
+                "objetivo": "usuario",
                 "nombre" : $(".input-nombre").val(),
-                "descripcion" : $(".input-descripcion").val()
+                "id" : $(".input-id").val(),
+                "usuario" : $(".input-usuario").val(),
+                "apellidos" : $(".input-apellidos").val(),
+                "contrasenya" : $(".input-contrasenya").val(),
+                "idgrupo"  : $(".grupos-disponibles").val(),
           };
           $.ajax({
                 data:  parametros,
                 url:   'resp.php',
                 type:  'post',
                 success:  function (response) { 
+                        alert(response);
                         var parametros = {
-                            "objetivo":"ou",
+                            "objetivo":"usuario",
                             "accion" : "buscar",
                             "busqueda" :"*" 
                         };
@@ -486,7 +564,7 @@
                               type:  'post',
                               success:  function (response) {
                                       $(".filas").html(response);
-                                      $.getScript("ver-info-ou.js", function(){
+                                      $.getScript("ver-info-usuario.js", function(){
                                       })
                               }
                         }) 
@@ -494,38 +572,28 @@
           });
         }
       });
-      $(".btn-anyadir").click(function(){
-          $(this).hide();
-          $(".btn-cancelar").fadeIn();
-          $(".form-usuario-panel input,textarea").removeAttr("readonly");
-          $(".btn-aceptar-anyadir").fadeIn();
-          $(".btn-danger-usuario").hide();
-          $("#modificar").hide();
-          $(".form-usuario-panel input, textarea").val("");
-          $(".mb h4").text("Añadir Unidad Organizativa");
-          $(".content-usuario-panel").hide();
-          $(".form-usuario-panel").css("width","100%");
-      });
 
       $(".btn-danger-usuario").click(function(){
-        if(confirm("Desea eliminar la Unidad Organizativa: " + $(".input-nombre").val() + "?")){
+        if(confirm("Desea eliminar al usuario: " + $(".input-usuario").val() + "?")){
           var parametros = {
                 "accion" : "eliminar",
-                "objetivo": "ou",
+                "objetivo": "usuario",
+                "usuario" : $(".input-usuario").val(),
+                "contrasenya" : $(".input-contrasenya").val(),
                 "nombre" : $(".input-nombre").val(),
-                "descripcion" : $(".input-descripcion").val()
+                "apellidos" : $(".input-apellidos").val(),
+                "idgrupo" : $(".grupos-disponibles").val(),
+                "id" : $(".input-id").val()
           };
           $.ajax({
                 data:  parametros,
                 url:   'resp.php',
                 type:  'post',
                 success:  function (response) {
-                        alert("Se ha eliminado con exito");
-
-                        $(".input input ,textarea").val("");
-
+                        $(".input input").val("");
+                        alert(response);
                         var parametros = {
-                            "objetivo":"ou",
+                            "objetivo":"usuario",
                             "accion" : "buscar",
                             "busqueda" :"*" 
                         };
@@ -535,7 +603,7 @@
                               type:  'post',
                               success:  function (response) {
                                       $(".filas").html(response);
-                                      $.getScript("ver-info-ou.js", function(){
+                                      $.getScript("ver-info-usuario.js", function(){
                                       })
                               }
                         }) 
@@ -545,7 +613,7 @@
       });
       $(".boton-buscar").click(function(){
         var parametros = {
-            "objetivo":"ou",
+            "objetivo":"usuario",
             "accion" : "buscar",
             "busqueda" :$(".input-buscar").val() + "*" 
           };
@@ -555,12 +623,13 @@
               type:  'post',
               success:  function (response) {
                       $(".filas").html(response);
-                      $.getScript("ver-info-ou.js", function(){
-                      })
+                      $.getScript("ver-info-usuario.js", function(){
+                      });
               }
         })
       });  
-  });
+
+    });
     </script>
 </body>
 
