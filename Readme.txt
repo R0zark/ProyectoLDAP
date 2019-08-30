@@ -1,4 +1,4 @@
-This is an project of a administration LDAP application.
+This is a project of an administration LDAP application.
 
 All styles are reserved for his owner.
 
